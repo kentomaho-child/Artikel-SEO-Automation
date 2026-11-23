@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel SEO Desk</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="workspace-layout">
+    <!-- Sidebar Kiri -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="brand-title">Artikel SEO Desk</span>
+          <span class="brand-sub">Editorial Workspace</span>
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-new-article" type="button">
+          + Artikel Baru
+        </button>
+      </div>
+
+      <div class="sidebar-search">
+        <input type="text" id="article-search" placeholder="Cari artikel..." autocomplete="off">
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all" type="button">Semua</button>
+          <button class="filter-btn" data-filter="completed" type="button">Selesai</button>
+          <button class="filter-btn" data-filter="draft" type="button">Draft</button>
+        </div>
+      </div>
+
+      <div class="article-list" id="article-list">
+        <div class="loading-state">Memuat artikel...</div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="nav-item-btn" id="nav-presets-btn" type="button">
+          Preset Bahasa
+        </button>
+        <button class="nav-item-btn" id="nav-settings-btn" type="button">
+          <span>Pengaturan API</span>
+          <span class="status-pill status-pill-muted" id="sidebar-api-pill">Memeriksa...</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Area Konten Tengah -->
+    <main class="main-content" id="main-content">
+      <!-- Top banner for notifications / quota info -->
+      <div class="top-notice" id="top-notice">
+        <div class="notice-text" id="notice-text">Memeriksa status sistem...</div>
+        <button class="notice-action" id="notice-action" type="button">Pengaturan API</button>
+      </div>
+
+      <!-- VIEW 1: Form Buat Artikel Baru (Step 1) -->
+      <section class="view-panel" id="view-new-article">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Buat Artikel SEO</h1>
+            <p class="panel-desc">Tentukan kata kunci, profil audiens, dan tatanan bahasa untuk artikel panjang minimal 1.000 kata.</p>
+          </div>
+        </div>
+
+        <form id="form-new-article" class="form-container">
+          <!-- Preset Picker -->
+          <div class="form-group preset-picker-box">
+            <label class="form-label" for="select-preset">Pilih Preset Audiens & Gaya Bahasa (Opsional)</label>
+            <div class="preset-selector-row">
+              <select id="select-preset" class="form-input">
+                <option value="">-- Isi Manual / Pilih Preset --</option>
+              </select>
+              <button class="btn btn-secondary" id="btn-apply-preset" type="button">Terapkan Preset</button>
+            </div>
+            <div class="field-hint">Memilih preset akan otomatis mengisi kolom Target Audiens, Tatanan Bahasa, Sapaan, dan Instruksi di bawah.</div>
+          </div>
+
+          <div class="form-grid-2">
+            <!-- Kata Kunci Utama -->
+            <div class="form-group">
+              <label class="form-label required" for="input-keyword">Kata Kunci Utama (Focus Keyword)</label>
+              <input type="text" id="input-keyword" class="form-input" placeholder="contoh: peluang usaha kuliner modal kecil" required>
+              <div class="field-hint">Topik atau frasa pencarian utama yang ditargetkan di Google.</div>
+            </div>
+
+            <!-- Target Word Count -->
+            <div class="form-group">
+              <label class="form-label required" for="input-word-count">Target Panjang Artikel (Minimal 1.000 kata)</label>
+              <input type="number" id="input-word-count" class="form-input font-mono" min="1000" step="50" value="1200" required>
+              <div class="field-hint">Standar artikel mendalam: disarankan 1.200 – 1.800 kata.</div>
+            </div>
+          </div>
+
+          <!-- Kata Kunci Pendukung (LSI) -->
+          <div class="form-group">
+            <label class="form-label" for="input-secondary-keywords">Kata Kunci Pendukung / LSI (Opsional)</label>
+            <input type="text" id="input-secondary-keywords" class="form-input" placeholder="pisahkan dengan koma, contoh: tips usaha kuliner, ide jualan makanan, modal awal">
+            <div class="field-hint">Frasa terkait untuk memperkaya semantik konten (opsional, jika kosong AI menentukan otomatis).</div>
+          </div>
+
+          <div class="form-grid-3">
+            <!-- Target Audience -->
+            <div class="form-group">
+              <label class="form-label required" for="input-audience">Target Audiens</label>
+              <input type="text" id="input-audience" class="form-input" placeholder="contoh: Pemilik UMKM pemula" value="Pembaca awam yang ingin memulai" required>
+            </div>
+
+            <!-- Language Style / Tone -->
+            <div class="form-group">
+              <label class="form-label required" for="select-style">Tatanan Bahasa / Tone</label>
+              <select id="select-style" class="form-input" required>
+                <option value="informatif">Informatif & Edukatif</option>
+                <option value="conversational" selected>Conversational & Lugas</option>
+                <option value="profesional">Profesional & Formal</option>
+                <option value="santai">Santai & Mengalir</option>
+                <option value="persuasif">Persuasif & Mendorong Tindakan</option>
+                <option value="otoritatif">Otoritatif & Berbasis Data</option>
+                <option value="storytelling">Storytelling & Naratif</option>
+              </select>
+            </div>
+
+            <!-- POV -->
+            <div class="form-group">
+              <label class="form-label required" for="select-pov">Sapaan Pembaca (POV)</label>
+              <select id="select-pov" class="form-input" required>
+                <option value="anda" selected>Anda (Sopan & Profesional)</option>
+                <option value="kamu">Kamu (Akrab & Personal)</option>
+                <option value="netral">Netral / Pihak Ketiga</option>
+                <option value="kita">Kita / Kami (Inklusif)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <!-- Bahasa -->
+            <div class="form-group">
+              <label class="form-label required" for="select-language">Bahasa Artikel</label>
+              <select id="select-language" class="form-input" required>
+                <option value="id" selected>Bahasa Indonesia</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+
+            <!-- Instruksi Khusus -->
+            <div class="form-group">
+              <label class="form-label" for="input-instructions">Instruksi Khusus (Opsional)</label>
+              <input type="text" id="input-instructions" class="form-input" placeholder="contoh: sertakan tabel estimasi modal, hindari istilah asing tanpa penjelasan">
+            </div>
+          </div>
+
+          <!-- Tombol Aksi -->
+          <div class="form-actions-row">
+            <button class="btn btn-primary" id="btn-submit-outline" type="button">
+              Buat Outline Dulu (Direkomendasikan)
+            </button>
+            <button class="btn btn-secondary" id="btn-submit-direct" type="button">
+              Langsung Tulis Artikel
+            </button>
+          </div>
+        </form>
+
+        <!-- Progress Box saat Generating -->
+        <div class="progress-box hidden" id="progress-box">
+          <div class="progress-spinner"></div>
+          <div class="progress-title" id="progress-status-title">Memproses Permintaan...</div>
+          <div class="progress-detail" id="progress-status-detail">Mohon tunggu beberapa saat.</div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: Review & Edit Outline (Step 2 ala RyRob) -->
+      <section class="view-panel hidden" id="view-review-outline">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Tinjau & Sesuaikan Outline</h1>
+            <p class="panel-desc">Periksa judul, meta description, dan susunan sub-judul sebelum AI menulis artikel lengkap.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-back-to-form" type="button">← Kembali ke Form</button>
+        </div>
+
+        <div class="outline-review-card">
+          <div class="form-group">
+            <div class="label-with-counter">
+              <label class="form-label" for="outline-title">SEO Title</label>
+              <span class="char-counter font-mono" id="outline-title-counter">0 / 60</span>
+            </div>
+            <input type="text" id="outline-title" class="form-input font-serif" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="outline-slug">URL Slug</label>
+              <input type="text" id="outline-slug" class="form-input font-mono" required>
+            </div>
+            <div class="form-group">
+              <div class="label-with-counter">
+                <label class="form-label" for="outline-meta">Meta Description</label>
+                <span class="char-counter font-mono" id="outline-meta-counter">0 / 160</span>
+              </div>
+              <input type="text" id="outline-meta" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="outline-sections-container">
+            <div class="outline-sections-header">
+              <span class="section-list-title">Susunan Bagian Artikel (Headings H2 & H3)</span>
+              <button class="btn btn-secondary btn-sm" id="btn-add-outline-section" type="button">+ Tambah Bagian H2</button>
+            </div>
+            <div class="outline-section-items" id="outline-section-items">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-actions-row">
+            <button class="btn btn-primary" id="btn-confirm-generate" type="button">
+              Tulis Artikel Lengkap (Minimal 1.000 Kata)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: Detail Artikel & Editor Markdown -->
+      <section class="view-panel hidden" id="view-article-detail">
+        <div class="editor-header">
+          <div class="article-meta-edit">
+            <div class="form-group">
+              <div class="label-with-counter">
+                <label class="form-label" for="detail-title">SEO Title</label>
+                <span class="char-counter font-mono" id="detail-title-counter">0 / 60</span>
+              </div>
+              <input type="text" id="detail-title" class="form-input font-serif">
+            </div>
+
+            <div class="meta-row-compact">
+              <div class="form-group flex-1">
+                <label class="form-label" for="detail-slug">URL Slug</label>
+                <input type="text" id="detail-slug" class="form-input font-mono">
+              </div>
+              <div class="form-group flex-2">
+                <div class="label-with-counter">
+                  <label class="form-label" for="detail-meta">Meta Description</label>
+                  <span class="char-counter font-mono" id="detail-meta-counter">0 / 160</span>
+                </div>
+                <input type="text" id="detail-meta" class="form-input">
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-toolbar">
+            <div class="toolbar-left">
+              <div class="tab-pill-group">
+                <button class="tab-pill active" id="tab-mode-preview" type="button">Preview Artikel</button>
+                <button class="tab-pill" id="tab-mode-markdown" type="button">Edit Markdown</button>
+              </div>
+              <span class="save-status-indicator" id="save-status-text">Semua tersimpan</span>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary btn-sm hidden" id="btn-save-article" type="button">Simpan Perubahan</button>
+              <button class="btn btn-secondary btn-sm" id="btn-expand-article" type="button">Perpanjang</button>
+              <button class="btn btn-secondary btn-sm" id="btn-copy-md" type="button">Salin MD</button>
+              <button class="btn btn-secondary btn-sm" id="btn-copy-html" type="button">Salin HTML</button>
+              <div class="dropdown-wrapper">
+                <button class="btn btn-secondary btn-sm" id="btn-download-menu" type="button">Unduh ▾</button>
+                <div class="dropdown-menu hidden" id="download-dropdown">
+                  <button class="dropdown-item" id="btn-download-md" type="button">Unduh Markdown (.md)</button>
+                  <button class="dropdown-item" id="btn-download-html" type="button">Unduh HTML (.html)</button>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm" id="btn-delete-article" type="button">Hapus</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-content-area">
+          <!-- Mode Preview -->
+          <div class="article-preview-pane font-serif" id="article-preview-pane">
+            <!-- Rendered HTML -->
+          </div>
+
+          <!-- Mode Edit Raw Markdown -->
+          <div class="article-markdown-pane hidden" id="article-markdown-pane">
+            <textarea id="detail-content" class="editor-textarea font-mono" placeholder="Ketik atau edit artikel Markdown di sini..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: Pengaturan API (BYOK & Mode Gratis) -->
+      <section class="view-panel hidden" id="view-settings">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Pengaturan API LLM</h1>
+            <p class="panel-desc">Kelola sumber kecerdasan buatan. Pilih antara Mode Gratis bawaan server atau gunakan API Key Anda sendiri tanpa batas.</p>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <!-- Switch Mode -->
+          <div class="settings-mode-selector">
+            <label class="mode-radio-card" id="mode-card-free">
+              <input type="radio" name="llm-mode" value="free" id="radio-mode-free" checked>
+              <div class="mode-card-body">
+                <div class="mode-card-title">Mode Gratis Bawaan Server</div>
+                <div class="mode-card-desc">Gunakan kuota gratis harian dari server (maksimal 3 artikel per hari) tanpa perlu memasukkan API Key.</div>
+              </div>
+            </label>
+
+            <label class="mode-radio-card" id="mode-card-byok">
+              <input type="radio" name="llm-mode" value="byok" id="radio-mode-byok">
+              <div class="mode-card-body">
+                <div class="mode-card-title">Gunakan API Key Sendiri (BYOK)</div>
+                <div class="mode-card-desc">Bebas kuota aplikasi tanpa batas dengan model pilihan Anda (Google Gemini, Groq, OpenRouter, OpenAI, atau Ollama lokal).</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Form BYOK Fields (disabled if free mode selected) -->
+          <div class="byok-form-section" id="byok-fields">
+            <div class="form-group">
+              <label class="form-label" for="byok-provider">Penyedia Layanan (Provider Preset)</label>
+              <select id="byok-provider" class="form-input">
+                <option value="gemini">Google Gemini (OpenAI Compatible — Tersedia Free Tier)</option>
+                <option value="groq">Groq (Super Cepat — Tersedia Free Tier)</option>
+                <option value="openrouter">OpenRouter (Mendukung Model :free dan Berbayar)</option>
+                <option value="openai">OpenAI (GPT-4o Mini / GPT-4o)</option>
+                <option value="ollama">Ollama / Server Lokal (Gratis 100% di Komputer Sendiri)</option>
+                <option value="custom">Kustom / Provider Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="byok-base-url">Base URL</label>
+                <input type="text" id="byok-base-url" class="form-input font-mono" value="https://generativelanguage.googleapis.com/v1beta/openai">
+                <div class="field-hint">Endpoint OpenAI-compatible (harus diakhiri tanpa tanda slash).</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="byok-model">Nama Model</label>
+                <input type="text" id="byok-model" class="form-input font-mono" value="gemini-2.5-flash">
+                <div class="field-hint">Contoh: gemini-2.5-flash, llama-3.3-70b-versatile, gpt-4o-mini</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="label-with-counter">
+                <label class="form-label" for="byok-api-key">API Key</label>
+                <button type="button" class="btn-text-action" id="btn-toggle-key-visibility">Tampilkan</button>
+              </div>
+              <input type="password" id="byok-api-key" class="form-input font-mono" placeholder="Masukkan API Key Anda">
+              <div class="field-hint">API Key Anda hanya disimpan secara lokal di browser Anda (localStorage) dan tidak pernah disimpan ke database.</div>
+            </div>
+
+            <div class="provider-help-box" id="provider-help-text">
+              Tips: Anda bisa mendapatkan API Key gratis dari Google AI Studio (aistudio.google.com) atau Groq Console (console.groq.com).
+            </div>
+          </div>
+
+          <div class="settings-actions-row">
+            <button class="btn btn-secondary" id="btn-test-connection" type="button">Uji Koneksi</button>
+            <button class="btn btn-primary" id="btn-save-settings" type="button">Simpan Pengaturan</button>
+          </div>
+
+          <div class="test-result-box hidden" id="test-result-box"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: Kelola Preset Bahasa -->
+      <section class="view-panel hidden" id="view-presets">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Kelola Preset Bahasa & Audiens</h1>
+            <p class="panel-desc">Simpan konfigurasi profil pembaca dan tone favorit untuk mempercepat proses penulisan artikel selanjutnya.</p>
+          </div>
+        </div>
+
+        <div class="presets-container">
+          <!-- List Preset Tersimpan -->
+          <div class="presets-list-card">
+            <h3 class="card-subtitle">Preset Tersimpan</h3>
+            <div class="presets-items-grid" id="presets-items-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Form Tambah Preset Baru -->
+          <div class="presets-form-card">
+            <h3 class="card-subtitle">Tambah Preset Baru</h3>
+            <form id="form-add-preset">
+              <div class="form-group">
+                <label class="form-label required" for="preset-name">Nama Preset</label>
+                <input type="text" id="preset-name" class="form-input" placeholder="contoh: Review Produk Gadget" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="preset-audience">Target Audiens</label>
+                <input type="text" id="preset-audience" class="form-input" placeholder="contoh: Calon pembeli pemula yang mencari rekomendasi" required>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label required" for="preset-style">Tatanan Bahasa</label>
+                  <input type="text" id="preset-style" class="form-input" placeholder="contoh: informatif dan obyektif" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required" for="preset-pov">Sapaan (POV)</label>
+                  <select id="preset-pov" class="form-input" required>
+                    <option value="anda">Anda</option>
+                    <option value="kamu">Kamu</option>
+                    <option value="netral">Netral</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="preset-instructions">Instruksi Khusus (Opsional)</label>
+                <textarea id="preset-instructions" class="form-input" rows="2" placeholder="contoh: sajikan poin kelebihan dan kekurangan secara berimbang"></textarea>
+              </div>
+
+              <button class="btn btn-primary" id="btn-submit-preset" type="submit">Simpan Preset</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Panel Inspektor SEO Kanan -->
+    <aside class="seo-inspector" id="seo-inspector">
+      <div class="inspector-header">
+        <span class="inspector-title">Inspektor SEO</span>
+        <span class="inspector-badge" id="inspector-badge-score">--</span>
+      </div>
+
+      <div class="score-card">
+        <div class="score-number-display">
+          <span class="score-val font-mono" id="score-val">0</span>
+          <span class="score-max font-mono">/ 100</span>
+        </div>
+        <div class="score-progress-bar">
+          <div class="score-bar-fill" id="score-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="inspector-metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">Jumlah Kata</div>
+          <div class="metric-value font-mono" id="metric-word-count">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Waktu Baca</div>
+          <div class="metric-value font-mono" id="metric-reading-time">0 mnt</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Keyword Density</div>
+          <div class="metric-value font-mono" id="metric-density">0%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Headings</div>
+          <div class="metric-value font-mono" id="metric-headings">0 / 0 / 0</div>
+          <div class="metric-sublabel">H1 / H2 / H3</div>
+        </div>
+      </div>
+
+      <div class="checklist-section">
+        <div class="checklist-title">Checklist Kualitas SEO</div>
+        <div class="checklist-items" id="checklist-items">
+          <div class="checklist-placeholder">Belum ada artikel yang dipilih. Buat artikel baru untuk melihat analisis SEO.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
