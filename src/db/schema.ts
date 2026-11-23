@@ -1,0 +1,9 @@
+import { mysqlTable, serial, varchar, text, timestamp } from "drizzle-orm/mysql-core";
+
+export const articles = mysqlTable("articles", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
